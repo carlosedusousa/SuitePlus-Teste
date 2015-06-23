@@ -1,0 +1,420 @@
+Olá, segue a resolução do teste. 
+
+Instructions:
+1) All solutions must be on a Git project, please send us your project link.
+2) Solve all tests you can. If you can not solve all, no worry, we will evaluate the ones you did.
+3) The solutions must be written in Javascript or Java.
+4) Any comment or doubts, please ask us.
+
+
+1) The Game
+Rock paper scissors is a classic 2 players game. Each player chooses rock, paper or scissors. The possible outcomes:
+		Rock destroys scissors.
+		Scissors cut paper.
+		Paper covers rock.
+Our code will break the game into 3 phases:
+a. User makes a choice
+b. Computer makes a choice
+c. A compare function will determine who wins
+
+Main
+package prova;
+
+public class TheGame {
+
+	public static void main(String[] args) throws Exception {
+
+		System.out.println(JoKenPo.jogar(JoKenPo.escolhaDoJogador(),
+				JoKenPo.escolhaDoComputador()));
+
+	}
+}
+Métodos
+
+package prova;
+
+import java.util.Random;
+import java.util.Scanner;
+
+public class JoKenPo {
+
+	private static Scanner scanner = new Scanner(System.in);
+	private static String escolhaDoJogador;
+
+	public static String escolhaDoJogador() {
+		System.out
+				.println("Informe a sua escolha: : Papel/papel, Pedra/pedra, Tesoura/tesoura:");
+		escolhaDoJogador = scanner.next();
+
+		while (!escolhaDoJogador.equalsIgnoreCase("papel")
+				&& !escolhaDoJogador.equalsIgnoreCase("tesoura")
+				&& !escolhaDoJogador.equalsIgnoreCase("pedra")) {
+			System.out
+					.println("Opção Inválida: Escreva Novamente: Papel/papel, Pedra/pedra, Tesoura/tesoura:");
+			escolhaDoJogador = scanner.next();
+		}
+
+		switch (escolhaDoJogador.toLowerCase()) {
+		case "papel":
+			System.out.println("Sua escolha foi - Papel");
+			break;
+		case "pedra":
+			System.out.println("Sua escolha foi - Pedra");
+			break;
+		case "tesoura":
+			System.out.println("Sua escolha foi - Tesoura");
+			break;
+		}
+
+		return escolhaDoJogador.toLowerCase();
+
+	}
+
+	public static String escolhaDoComputador() {
+		Random gerador = new Random();
+		int numeroAleatorio = gerador.nextInt(3) + 1;
+		String escolha = null;
+
+		switch (numeroAleatorio) {
+		case 1:
+			System.out.println("A escolha do computador foi - Papel");
+			escolha = "papel";
+			break;
+		case 2:
+			System.out.println("A escolha do computador foi - Pedra");
+			escolha = "pedra";
+			break;
+		case 3:
+			System.out.println("A escolha do computador foi - Tesoura");
+			escolha = "tesoura";
+			break;
+		}
+		return escolha;
+	}
+
+	public static String jogar(String eu, String vc) throws Exception {
+		if (!(eu.equals("pedra") || eu.equals("papel") || eu.equals("tesoura"))
+				|| !(vc.equals("pedra") || vc.equals("papel") || vc
+						.equals("tesoura"))) {
+			throw new Exception("Erro nas alternativas");
+		}
+
+		if (eu.equals("pedra")) {
+			if (vc.equals("tesoura")) {
+				return imprime("jogador");
+			}
+
+			if (vc.equals("papel")) {
+				return imprime("computador");
+			}
+		}
+
+		if (eu.equals("tesoura")) {
+			if (vc.equals("papel")) {
+				return imprime("jogador");
+			}
+
+			if (vc.equals("pedra")) {
+				return imprime("computador");
+			}
+		}
+
+		if (eu.equals("papel")) {
+			if (vc.equals("pedra")) {
+				return imprime("jogador");
+			}
+
+			if (vc.equals("tesoura")) {
+				return imprime("computador");
+			}
+		}
+
+		return "empate";
+	}
+
+	public static String imprime(String r) {
+		return (r.equalsIgnoreCase("jogador") ? "vitória do jogador"
+				: "vitória do computador");
+	}
+}
+Teste Unitário
+package testes;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+import prova.JoKenPo;
+
+public class JoKenPoTest {
+	@Test
+	public void pedra() throws Exception {
+		assertEquals("empate", JoKenPo.jogar("pedra", "pedra"));
+		assertEquals("vitória do jogador", JoKenPo.jogar("pedra", "tesoura"));
+		assertEquals("vitória do computador", JoKenPo.jogar("pedra", "papel"));
+	}
+
+	@Test
+	public void tesoura() throws Exception {
+		assertEquals("empate", JoKenPo.jogar("tesoura", "tesoura"));
+		assertEquals("vitória do jogador", JoKenPo.jogar("tesoura", "papel"));
+		assertEquals("vitória do computador", JoKenPo.jogar("tesoura", "pedra"));
+	}
+
+	@Test
+	public void papel() throws Exception {
+		assertEquals("empate", JoKenPo.jogar("papel", "papel"));
+		assertEquals("vitória do jogador", JoKenPo.jogar("papel", "pedra"));
+		assertEquals("vitória do computador", JoKenPo.jogar("papel", "tesoura"));
+	}
+
+	@Test(expected = Exception.class)
+	public void erroTodos() throws Exception {
+		JoKenPo.jogar("garfo", "faca");
+	}
+
+	@Test(expected = Exception.class)
+	public void erroVc() throws Exception {
+		JoKenPo.jogar("tesoura", "vaca");
+	}
+
+	@Test(expected = Exception.class)
+	public void erroEu() throws Exception {
+		JoKenPo.jogar("aviao", "papel");
+	}
+		
+}
+
+
+
+
+2) The Frog
+A frog only moves forward, but it can move in steps 1 inch long or in jumps 2 inches long. A frog can cover the same distance using different combinations of steps and jumps.
+Write a function that calculates the number of different combinations that a frog can use to cover a given distance.
+For example, a distance of 3 inches can be covered in three ways: step-step-step, step-jump, and jump-step.
+package prova;
+
+import java.util.Scanner;
+
+// Classe
+public class Frog {
+	/*
+	 * NOTA 
+	 * Tentei entender o problema e no primeiro momento entendi como
+	 * solucao aplicar combinacoes simples e o código foi escrito abaixo com os
+	 * resultados testados. Para calcular as combinacoes de fatoriais das
+	 * combinacoes possiveis de passos de 1 polegada e de saltos de 2 polegadas
+	 * foi feito a divisao da distancia a percorrer por 2 e consequentemente
+	 * teremos como calcular o fatorial das combinacoes com permutacoes dos
+	 * valores
+	 * 
+	 * Ex Se a distancia a percorrer eh 3 polegadas, as combinacoes de passos e
+	 * saltos sao:
+	 * 
+	 * passo + passo + passo ou 1 + 1 + 1 (polegadas), poré cada salto deve ser
+	 * alternado(permutação) para ver isso só trocar por A + B + C que pode ser
+	 * trocado por B + A + C por exemplo
+	 * 
+	 * salto + passo é outra possibilidade assim como passo + salto assim com
+	 * para A+B e B+A e assim por diante
+	 * 
+	 * Porém para os resultados reais que o problema requer, vi que
+	 * Para fazer permutacao composta de elementos iguais teremos que validar
+	 * duas formulas Como exemplo de 3 polegadas teremos então 3 TRES
+	 * combinacoes e não 8 OITO pela permutacao simples
+	 * 
+	 * Porém para distancia como 6 ou 9 por exemplo, teremos que relizar a
+	 * permutacao de dois elementos repetidos e em quantidades iguais de número
+	 * 
+	 * ex: passo a passo 
+	 * 1+1+1+1+1+1 = 6 > 1 possibilidade 1 P(6,6) =1
+	 * 
+	 * 2+1+1+1+1 = 6 > 1 possibilidade 2 .......... 
+	 * 1+2+1+1+1 = 6 > 1 possibilidade 3 .......... 
+	 * 1+1+2+1+1 = 6 > 1 possibilidade 4 ..........
+	 * 1+1+1+2+1 = 6 > 1 possibilidade 5 .......... 
+	 * 1+1+1+1+2 = 6 > 1 possibilidade 6 .......... 
+	 * nesse caso a permutação de 4 elementos iguais
+	 * fica P(5posicoes,4elementos iguais)=5
+	 * 
+	 * porém aqui começa a combinacao de elementos duplicados e deve-se aplicar
+	 * outra fórmula
+	 * 
+	 * temos dois elementos saltos e dois passos como exemplo 2 e 1 polegadas totalizando 6 ao final
+	 * segue:
+	 * 2+2+1+1 = 6 > 1 possibilidade 7 
+	 * 2+1+2+1 = 6 > 1 possibilidade 8 
+	 * 2+1+1+2 = 6 > 1 possibilidade 9 
+	 * 1+2+1+2 = 6 > 1 possibilidade 10 
+	 * 1+1+2+2 = 6 > 1 possibilidade 11
+	 * 
+	 * E finalizando 2+2+2 = 6 > 1 possibilidade 12 P(3,3)=1
+	 * 
+	 * Eis a questão.. após tentar pensar na solução sem exito pesquisei possível 
+	 * lógicas para a solução, e uma delas seria permutação com elementos repetidos 
+	 * porém aqui aplicando a o calculo para o mesmo exemplo descrito acima os resultados seriam:
+	 * 
+	 *1: 111111  P(6,6) = 1 possibilidade OK
+	 * 
+	 *2: 21111   p(5,4) = 5 possibilidades OK 
+	 *3: 12111
+	 *4: 11211
+	 *5: 11121
+	 *6: 11112
+	 * 
+	 * PARA (2+2+1+1 = 6) NÃO SE APLICA POIS HÁ APENAS 5 RESULTADOS POSSÍVEIS
+	 *7:  2211   p (4!,2!) (4*3)/(2*1) = 12/2 = 6 o fatorial devolve 6 
+	 *8:  2121   mas no "teste de mesa" ao lado temos 5 possibilidades....
+	 *9:  2112
+	 *10: 1212
+	 *11: 1122 
+	 * 
+	 * e 
+	 *12: 222
+	 * exatamente 12 possibilidades
+	 *  
+	 * o mesmo problema seria que distancia de 7 polegadas 
+	 * 
+	 * Não resolvendo com Permutação e combinações ainda encontrei 
+	 * solucoes tentando com série Fibonacci
+	 * 
+	 * f[0] = 0;
+	 * f[1] = 1;
+	 * f[2] = 1;
+	 * f[3] = 2;
+	 * f[4] = 3 
+	 * f[5] = 5;
+	 * f[6] = 8;
+	 * f[7] = 13 
+
+	 AQUI PARA O EXERCICIO ONDE O FROG TEM QUE TER X COMBINACOES PARA 7 POLEGADAS 
+	 NA VERDADE HÁ 12 COMO EXPLICADO ACIMA...OU SEJA, NÃO SE APLICA FIBONACCI POIS 
+	 HÁ APENAS 12 POSSIBILIDADES COMO COMPROVADO NO TESTE DE MESA E NÃO 13 COMO 
+	 SERIA COM FIBONACCI.
+
+ 
+SE ESSE PROBLEMA UTILIZARIA COMBINAÇÕES E PERMUTAÇÕES 
+OU ATÉ MESMO FIBONACCI NÃO ENCONTREI NENHUMA SOLUÇÃO EFETIVA NA INTERNET
+MESMO DEPOIS DE TENTAR RESOLVER SEM PESQUISAR 
+ 
+ Resumo, tentei e não resolvei, pesquisei e não encontrei ninguém que soluciona-se. 
+ achei fonts que não resolvem com exatidão 
+ não encontrei nenhuma resposta plausivel também no stackoverflow. 
+ 
+ QUAL A RESPOSTA????  
+ 
+	 *  
+	 * 
+	 */
+	public static void main(String[] args) {
+
+		/* 
+		 		 * */
+		int dividendo = 0;
+		int cociente = 0;
+		int somaFatorialTotal = 0;
+		int somaFatorialSemCombinacao = 0;
+
+		Scanner s = new Scanner(System.in);
+
+		System.out.print("Digite a distancia a ser percorrida: ");// 3
+		dividendo = s.nextInt();
+
+		System.out.println("Dividendo " + dividendo);
+
+		cociente = dividendo / 2;
+		System.out.println("Cociente " + cociente);
+
+		if (dividendo % 2 == 0) {
+			cociente = cociente - 1;
+		}
+
+		//
+		for (int x = dividendo; x > cociente; x--) {
+
+			somaFatorialTotal += fatorial(x);
+			somaFatorialSemCombinacao += fatorial(x - 1);
+
+		}
+
+		System.out.println("Soma dos Fatoriais " + somaFatorialTotal);
+		System.out.println("Soma SEM dos Fatoriais "
+				+ somaFatorialSemCombinacao);
+
+		s.close();
+	}
+
+	// Valida fatorial
+	private static int fatorial(int valor) {
+
+		// resultado recebe o maior valor e a cada iteracao calcula o fatorial
+		// seguinte Ex: 4! 3! 2! ...
+		int resultado = valor;
+		for (int x = valor - 1; x > 0; x--) {
+			// resultado recebe a soma dos fatoriais.
+			resultado *= x;
+		}
+		return resultado;
+	}
+
+}
+
+
+
+3) Binary Tree
+Write a function that checks if a given binary tree is a valid binary search tree. A binary search tree (BST) is a binary tree where the value of each node is larger or equal to the values in all the nodes in that node's left subtree and is smaller than the values in all the nodes in that node's right subtree.
+For example, for the following tree:
+n1 (Value: 1, Left: null, Right: null)
+n2 (Value: 2, Left: n1, Right: n3)
+n3 (Value: 3, Left: null, Right: null)
+Call to isValidBST(n2) should return true since a tree with root at n2 is a valid binary search tree.
+Explanation: Subtrees rooted at nodes n1 and n3 are valid binary search trees, as they have no children. A tree rooted at node n2 is a valid binary search tree since its value (2) is larger or equal to the largest value in its left subtree (1, rooted at n1) and is smaller than the smallest value in its right subtree (3 rooted at n3).
+
+4) Closures
+Fix the bugs in the registerHandlers function. An alert should display anchor's zero-based index within a document instead of following the link.
+For example, in the document below, the alert should display "2" when Google anchor is clicked since it is the third anchor element in the document and its zero-based index is 2.
+
+Example:
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Test page</title>
+  </head>
+  <body>
+    In my life, I used the following web search engines:<br/>
+    <a href="//www.yahoo.com">Yahoo!</a><br/>
+    <a href="//www.altavista.com">AltaVista</a><br/>
+    <a href="//www.google.com">Google</a><br/>
+  </body>
+</html>
+
+
+Code to fix:
+
+function registerHandlers() {
+  var as = document.getElementsByTagName('a');
+  for (i = as.length; i-- >= 0;) {
+    as[i].onclick = function() {
+      alert(i);
+      return true;
+    }
+  }
+}
+CORREÇÃO 4
+
+function registerHandlers() {
+  var as = document.getElementsByTagName('a');
+  for (var i = 0, x = as.length; i < x ; i++) {
+    as[i].onclick = generateHandler(i);
+  }
+    //SEPARAR FUCTION
+   function generateHandler (i) {
+     return function () {
+      alert(i);
+      return false;
+     }
+    } 
+}
+
